@@ -20,4 +20,4 @@ Route::get('/', function () {
 
 Route::get('/test','App\Http\Controllers\usercontroller@index')->name('test');
 Route::get('/test2','App\Http\Controllers\usercontroller@users')->name('test2');
-//Route::post('/test3/','App\Http\Controllers\usercontroller@users')->name('test2');
+

@@ -24,8 +24,10 @@ class Usercontroller extends Controller
 
 
         return User::query()
-            ->when($request->search,function ($q,$request) {
-                $q->where('name', 'like', '%' . 'Natalia' . '%');
+            ->when($request->search,function ($q) use ($request) {
+
+                $q->where('name', 'like', '%' . $request->search . '%');
+
             })
             ->paginate(10);
 

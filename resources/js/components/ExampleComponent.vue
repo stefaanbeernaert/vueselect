@@ -1,15 +1,14 @@
 <template>
     <v-select
         :options="paginated"
+
         label="name"
         :filterable="false"
         :as="['label', 'name', 'id']"
         @open="onOpen"
         @close="onClose"
-        @search="(search, loading) => {
-      loading(true)
-      fetchOptions(search).then(() => loading(false))
-    }"
+        @search="inputSearch"
+
 
         class="form-control"
     >
@@ -22,93 +21,97 @@
 </template>
 
 <script>
-    import 'vue-select/dist/vue-select.css';
+import 'vue-select/dist/vue-select.css';
+import debounce from 'lodash.debounce';
 
+export default {
+    name: 'InfiniteScroll',
+    data: () => ({
+        observer: null,
+        limit: 10,
+        search: '',
+        users: [],
+        total: 0,
+        page: 0,
+    }),
 
-    export default {
-        name: 'InfiniteScroll',
-        data: () => ({
-            observer: null,
-            limit: 10,
-            search: '',
-            users: [],
-            total: 0,
-            page:0,
-        }),
+    computed: {
 
-        computed: {
+        filtered() {
 
-            filtered() {
-
-               return this.users.filter((user) => user.name.includes(this.search))
-            },
-            paginated() {
-                return this.filtered.slice(0, this.limit)
-            },
-            hasNextPage() {
-                return this.paginated.length < this.total
-            },
+            return this.users.filter((user) => user.name.includes(this.search))
         },
-        mounted() {
-            this.observer = new IntersectionObserver(this.infiniteScroll)
+        paginated() {
+            return this.filtered.slice(0, this.limit)
         },
-        created() {
-            this.getUsers();
+        hasNextPage() {
+            return this.paginated.length < this.total
         },
-        methods: {
+    },
+    mounted() {
+        this.observer = new IntersectionObserver(this.infiniteScroll)
+    },
+    created() {
+        this.getUsers();
+    },
+    methods: {
 
 
-            getUsers(){
+        getUsers(loading, search) {
 
-              /*  let page = (this.paginated.length/this.limit)+1;*/
-                this.page++;
-                this.$emit('search', this.search, this.toggleLoading);
-                axios
-                .get('test2',{
+            this.page++;
+
+            axios
+                .get('test2', {
                     params: {
-                        search: this.search,
+                        search: search,
                         page: this.page,
                     }
                 })
 
                 .then((response) => {
-                   //console.log(response);
+
                     this.users = this.users.concat(response.data.data);
-                  //  console.log(this.users);
                     this.total = response.data.total;
+                    loading(false);
                 })
                 .catch()
                 .then(() => {
 
                 })
-            },
-            async onOpen() {
-                if (this.hasNextPage) {
-                    await this.$nextTick()
-                    this.observer.observe(this.$refs.load)
-                }
-            },
-            onClose() {
-                this.observer.disconnect()
-            },
-            async infiniteScroll([{ isIntersecting, target }]) {
-                if (isIntersecting) {
-                    const ul = target.offsetParent
-                    const scrollTop = target.offsetParent.scrollTop
-                    this.limit += 10
-                    this.getUsers();
-                    await this.$nextTick()
-                    ul.scrollTop = scrollTop
-                }
-            },
-            fetchOptions(search,loading){
-              this.search = search;
-              this.getUsers();
-
+        },
+        async onOpen() {
+            if (this.hasNextPage) {
+                await this.$nextTick()
+                this.observer.observe(this.$refs.load)
+            }
+        },
+        onClose() {
+            this.observer.disconnect()
+        },
+        async infiniteScroll([{isIntersecting, target}]) {
+            if (isIntersecting) {
+                const ul = target.offsetParent
+                const scrollTop = target.offsetParent.scrollTop
+                this.limit += 10
+                this.getUsers();
+                await this.$nextTick()
+                ul.scrollTop = scrollTop
+            }
+        },
+        inputSearch(search, loading) {
+            if (search.length) {
+                loading(true);
+                this.page = 0
+                this.users = []
+                this.getUsers(loading, search)
             }
         },
 
-    }
+
+    },
+
+}
 
 </script>
 <style scoped>
