@@ -1,9 +1,8 @@
 <template>
     <v-select
-        :options="paginated"
+        :options="users"
         label="name"
         :filterable="false"
-        :as="['label', 'name', 'id']"
         @open="onOpen"
         @close="onClose"
         @search="inputSearch"
@@ -23,10 +22,6 @@ import 'vue-select/dist/vue-select.css';
 import _ from "lodash";
 
 
-
-const range = _.range(1, 3); // [1, 2]
-const random = _.random(0, 5); // an integer between 0 and 5
-
 export default {
 
     name: 'InfiniteScroll',
@@ -39,18 +34,18 @@ export default {
         page: 0,
         loading: false,
     }),
-
     computed: {
 
-        filtered() {
-
+      /*  filtered() {
             return this.users.filter((user) => user.name.includes(this.search))
-        },
-        paginated() {
+        },*/
+   /*     paginated() {
             return this.filtered.slice(0, this.limit)
-        },
+        },*/
+
         hasNextPage() {
-            return this.paginated.length < this.total
+
+            return this.users.length < this.total
         },
     },
     mounted() {
@@ -60,8 +55,6 @@ export default {
         this.getUsers();
     },
     methods: {
-
-
         getUsers(search) {
 
             this.page++;
@@ -104,29 +97,17 @@ export default {
                 ul.scrollTop = scrollTop
             }
         },
-
-
-        inputSearch: _.debounce(function (search, loading)  {
+        inputSearch: _.debounce(function (search, loading) {
             if (search.length) {
                 this.loading = true
-                //loading(true);
-                console.log(this)
-               this.page = 0
-
-               this.users = []
-
-
-                this.getUsers(search,loading)
-
-
+                this.page = 0
+                this.users = []
+                this.getUsers(search, loading)
 
             }
         }, 500),
-
     },
-
 }
-
 </script>
 <style scoped>
 .loader {

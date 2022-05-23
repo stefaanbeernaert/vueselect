@@ -5410,14 +5410,6 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
-//
-
-
-
-var range = lodash__WEBPACK_IMPORTED_MODULE_1___default().range(1, 3); // [1, 2]
-
-
-var random = lodash__WEBPACK_IMPORTED_MODULE_1___default().random(0, 5); // an integer between 0 and 5
 
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
@@ -5434,18 +5426,15 @@ var random = lodash__WEBPACK_IMPORTED_MODULE_1___default().random(0, 5); // an i
     };
   },
   computed: {
-    filtered: function filtered() {
-      var _this = this;
+    /*  filtered() {
+          return this.users.filter((user) => user.name.includes(this.search))
+      },*/
 
-      return this.users.filter(function (user) {
-        return user.name.includes(_this.search);
-      });
-    },
-    paginated: function paginated() {
-      return this.filtered.slice(0, this.limit);
-    },
+    /*     paginated() {
+             return this.filtered.slice(0, this.limit)
+         },*/
     hasNextPage: function hasNextPage() {
-      return this.paginated.length < this.total;
+      return this.users.length < this.total;
     }
   },
   mounted: function mounted() {
@@ -5456,7 +5445,7 @@ var random = lodash__WEBPACK_IMPORTED_MODULE_1___default().random(0, 5); // an i
   },
   methods: {
     getUsers: function getUsers(search) {
-      var _this2 = this;
+      var _this = this;
 
       this.page++;
       axios.get('test2', {
@@ -5465,30 +5454,30 @@ var random = lodash__WEBPACK_IMPORTED_MODULE_1___default().random(0, 5); // an i
           page: this.page
         }
       }).then(function (response) {
-        _this2.users = _this2.users.concat(response.data.data);
-        _this2.total = response.data.total;
+        _this.users = _this.users.concat(response.data.data);
+        _this.total = response.data.total;
       })["catch"]().then(function () {
-        _this2.loading = false;
+        _this.loading = false;
       });
     },
     onOpen: function onOpen() {
-      var _this3 = this;
+      var _this2 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
         return _regeneratorRuntime().wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
-                if (!_this3.hasNextPage) {
+                if (!_this2.hasNextPage) {
                   _context.next = 4;
                   break;
                 }
 
                 _context.next = 3;
-                return _this3.$nextTick();
+                return _this2.$nextTick();
 
               case 3:
-                _this3.observer.observe(_this3.$refs.load);
+                _this2.observer.observe(_this2.$refs.load);
 
               case 4:
               case "end":
@@ -5502,7 +5491,7 @@ var random = lodash__WEBPACK_IMPORTED_MODULE_1___default().random(0, 5); // an i
       this.observer.disconnect();
     },
     infiniteScroll: function infiniteScroll(_ref) {
-      var _this4 = this;
+      var _this3 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
         var _ref2, _ref2$, isIntersecting, target, ul, scrollTop;
@@ -5520,12 +5509,12 @@ var random = lodash__WEBPACK_IMPORTED_MODULE_1___default().random(0, 5); // an i
 
                 ul = target.offsetParent;
                 scrollTop = target.offsetParent.scrollTop;
-                _this4.limit += 10;
+                _this3.limit += 10;
 
-                _this4.getUsers();
+                _this3.getUsers();
 
                 _context2.next = 8;
-                return _this4.$nextTick();
+                return _this3.$nextTick();
 
               case 8:
                 ul.scrollTop = scrollTop;
@@ -5540,9 +5529,7 @@ var random = lodash__WEBPACK_IMPORTED_MODULE_1___default().random(0, 5); // an i
     },
     inputSearch: lodash__WEBPACK_IMPORTED_MODULE_1___default().debounce(function (search, loading) {
       if (search.length) {
-        this.loading = true; //loading(true);
-
-        console.log(this);
+        this.loading = true;
         this.page = 0;
         this.users = [];
         this.getUsers(search, loading);
@@ -28652,10 +28639,9 @@ var render = function () {
   return _c("v-select", {
     staticClass: "form-control",
     attrs: {
-      options: _vm.paginated,
+      options: _vm.users,
       label: "name",
       filterable: false,
-      as: ["label", "name", "id"],
       loading: _vm.loading,
     },
     on: { open: _vm.onOpen, close: _vm.onClose, search: _vm.inputSearch },

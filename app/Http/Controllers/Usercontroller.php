@@ -22,6 +22,15 @@ class Usercontroller extends Controller
 
     public function users(Request $request){
 
+    /*    if ($request->search){
+            return User::query()->when($request->search,function ($q) use ($request) {
+
+                $q->where('name', 'like', '%' . $request->search . '%');
+            })->paginate(10);
+        }else{
+            return User::paginate(10);
+        }*/
+
 
         return User::query()
             ->when($request->search,function ($q) use ($request) {
