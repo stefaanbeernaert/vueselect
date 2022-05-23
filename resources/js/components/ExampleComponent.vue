@@ -1,16 +1,14 @@
 <template>
     <v-select
         :options="paginated"
-
         label="name"
         :filterable="false"
         :as="['label', 'name', 'id']"
         @open="onOpen"
         @close="onClose"
         @search="inputSearch"
-
-
         class="form-control"
+        :loading="loading"
     >
         <template #list-footer>
             <li v-show="hasNextPage" ref="load" class="loader">
@@ -22,9 +20,15 @@
 
 <script>
 import 'vue-select/dist/vue-select.css';
-import debounce from 'lodash.debounce';
+import _ from "lodash";
+
+
+
+const range = _.range(1, 3); // [1, 2]
+const random = _.random(0, 5); // an integer between 0 and 5
 
 export default {
+
     name: 'InfiniteScroll',
     data: () => ({
         observer: null,
@@ -33,6 +37,7 @@ export default {
         users: [],
         total: 0,
         page: 0,
+        loading: false,
     }),
 
     computed: {
@@ -57,7 +62,7 @@ export default {
     methods: {
 
 
-        getUsers(loading, search) {
+        getUsers(search) {
 
             this.page++;
 
@@ -73,11 +78,11 @@ export default {
 
                     this.users = this.users.concat(response.data.data);
                     this.total = response.data.total;
-                    loading(false);
+
                 })
                 .catch()
                 .then(() => {
-
+                    this.loading = false;
                 })
         },
         async onOpen() {
@@ -99,15 +104,24 @@ export default {
                 ul.scrollTop = scrollTop
             }
         },
-        inputSearch(search, loading) {
-            if (search.length) {
-                loading(true);
-                this.page = 0
-                this.users = []
-                this.getUsers(loading, search)
-            }
-        },
 
+
+        inputSearch: _.debounce(function (search, loading)  {
+            if (search.length) {
+                this.loading = true
+                //loading(true);
+                console.log(this)
+               this.page = 0
+
+               this.users = []
+
+
+                this.getUsers(search,loading)
+
+
+
+            }
+        }, 500),
 
     },
 

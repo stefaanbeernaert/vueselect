@@ -29,7 +29,7 @@
 
 </div>
 <script src="../js/app.js"></script>
-<script src="lodash.js"></script>
+
 </body>
 </html>
 

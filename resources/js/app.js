@@ -22,8 +22,8 @@ window.Vue = require('vue').default;
 Vue.component('example-component', require('./components/ExampleComponent.vue').default);
 import Vue from 'vue';
 import vSelect from 'vue-select';
-
 Vue.component('v-select', vSelect);
+var _ = require('lodash');
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
