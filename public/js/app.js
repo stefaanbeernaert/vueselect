@@ -5426,14 +5426,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     };
   },
   computed: {
-    /*  filtered() {
-          return this.users.filter((user) => user.name.includes(this.search))
-      },*/
-
-    /*     paginated() {
-             return this.filtered.slice(0, this.limit)
-         },*/
     hasNextPage: function hasNextPage() {
+      console.log(this.users.length);
+      console.log(this.total);
       return this.users.length < this.total;
     }
   },
@@ -5448,7 +5443,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       var _this = this;
 
       this.page++;
-      axios.get('test2', {
+      axios.get('users', {
         params: {
           search: search,
           page: this.page
@@ -5468,18 +5463,13 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
-                if (!_this2.hasNextPage) {
-                  _context.next = 4;
-                  break;
-                }
-
-                _context.next = 3;
+                _context.next = 2;
                 return _this2.$nextTick();
 
-              case 3:
+              case 2:
                 _this2.observer.observe(_this2.$refs.load);
 
-              case 4:
+              case 3:
               case "end":
                 return _context.stop();
             }
@@ -5527,14 +5517,36 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         }, _callee2);
       }))();
     },
-    inputSearch: lodash__WEBPACK_IMPORTED_MODULE_1___default().debounce(function (search, loading) {
-      if (search.length) {
-        this.loading = true;
-        this.page = 0;
-        this.users = [];
-        this.getUsers(search, loading);
-      }
-    }, 500)
+    inputSearch: lodash__WEBPACK_IMPORTED_MODULE_1___default().debounce( /*#__PURE__*/function () {
+      var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(search, loading) {
+        return _regeneratorRuntime().wrap(function _callee3$(_context3) {
+          while (1) {
+            switch (_context3.prev = _context3.next) {
+              case 0:
+                if (!search.length) {
+                  _context3.next = 7;
+                  break;
+                }
+
+                this.users = [];
+                this.loading = true;
+                this.page = 0;
+                this.getUsers(search, loading);
+                _context3.next = 7;
+                return this.$nextTick();
+
+              case 7:
+              case "end":
+                return _context3.stop();
+            }
+          }
+        }, _callee3, this);
+      }));
+
+      return function (_x, _x2) {
+        return _ref3.apply(this, arguments);
+      };
+    }(), 500)
   }
 });
 
