@@ -18,7 +18,11 @@
                         <p class="fs-4  text-center fw-bold">Users</p>
                     </div>
                     <div class="col-6 offset-3 my-5 p-5 justify-content-center align-items-center shadow-lg">
-                        <example-component></example-component>
+                        <Home></Home>
+
+
+
+
                     </div>
                 </div>
 

@@ -1,15 +1,18 @@
 <template>
     <v-select
-        :options="users"
-        label="name"
+
+        :options="list"
+
+        :label="label"
         :filterable="false"
         @open="onOpen"
         @close="onClose"
         @search="inputSearch"
+        @option="selected"
         class="form-control"
         :loading="loading"
-
     >
+
         <template #list-footer>
             <li v-show="hasNextPage" ref="load" class="loader">
                 Loading more options...
@@ -21,37 +24,46 @@
 import 'vue-select/dist/vue-select.css';
 import _ from "lodash";
 export default {
-    name: 'InfiniteScroll',
+
+    name: 'Search-Infinite',
+    props:{
+        url: String,
+        label: String,
+       selected:Number,
+
+    },
     data: () => ({
         observer: null,
         limit: 10,
         search: '',
-        users: [],
+        list: [],
         total: 0,
         page: 0,
         loading: false,
 
     }),
     computed: {
+
         hasNextPage() {
-            console.log(this.users.length)
-            console.log(this.total)
-            return this.users.length < this.total
+
+            return this.list.length < this.total
 
         },
     },
     mounted() {
       this.observer = new IntersectionObserver(this.infiniteScroll)
-
     },
     created() {
+
         this.getUsers();
     },
     methods: {
         getUsers(search) {
+
             this.page++;
             axios
-                .get('users', {
+                .get(this.url, {
+
                     params: {
                         search: search,
                         page: this.page,
@@ -59,7 +71,7 @@ export default {
                 })
                 .then((response) => {
 
-                   this.users = this.users.concat(response.data.data);
+                   this.list = this.list.concat(response.data.data);
                     this.total = response.data.total;
 
                 })
@@ -90,15 +102,20 @@ export default {
         },
         inputSearch: _.debounce(   async function (search, loading) {
             if (search.length) {
-                this.users = []
+                this.list = []
                 this.loading = true
                 this.page = 0
+                this.limit += 10
                 this.getUsers(search, loading)
                 await this.$nextTick()
 
             }
         }, 500),
     },
+    selected(list){
+       //this.$emit('input',3)
+        this.$emit("option:selected", selectedOption);
+    }
 }
 </script>
 <style scoped>
