@@ -1,16 +1,14 @@
 <template>
     <v-select
-
         :options="list"
-
         :label="label"
         :filterable="false"
         @open="onOpen"
         @close="onClose"
         @search="inputSearch"
-        @option="selected"
         class="form-control"
         :loading="loading"
+        @input="selected"
     >
 
         <template #list-footer>
@@ -23,13 +21,19 @@
 <script>
 import 'vue-select/dist/vue-select.css';
 import _ from "lodash";
+
 export default {
 
     name: 'Search-Infinite',
+    emits:{
+
+    },
     props:{
         url: String,
         label: String,
-       selected:Number,
+        valueToReturn: String,
+        selectedAddress:null,
+        selectedUser:null,
 
     },
     data: () => ({
@@ -40,6 +44,7 @@ export default {
         total: 0,
         page: 0,
         loading: false,
+
 
     }),
     computed: {
@@ -54,7 +59,7 @@ export default {
       this.observer = new IntersectionObserver(this.infiniteScroll)
     },
     created() {
-
+        this.selected();
         this.getUsers();
     },
     methods: {
@@ -67,6 +72,8 @@ export default {
                     params: {
                         search: search,
                         page: this.page,
+                        userId: this.selectedUser,
+                        addressId: this.selectedAddress
                     }
                 })
                 .then((response) => {
@@ -111,11 +118,17 @@ export default {
 
             }
         }, 500),
+        selected(value){
+            if( value && this.valueToReturn ){
+                value = value[this.valueToReturn];
+            }
+            this.$emit('input', value);
+
+
+
+        }
     },
-    selected(list){
-       //this.$emit('input',3)
-        this.$emit("option:selected", selectedOption);
-    }
+
 }
 </script>
 <style scoped>

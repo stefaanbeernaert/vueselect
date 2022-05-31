@@ -5390,17 +5390,18 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: "Home",
   props: {},
   data: function data() {
     return {
-      selected: 0,
       url: String,
       label: String,
-      selectedUser: 0,
-      selectedAddress: Number
+      selectedUser: null,
+      selectedAddress: null
     };
   },
   components: {
@@ -5465,16 +5466,17 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
-//
-//
 
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: 'Search-Infinite',
+  emits: {},
   props: {
     url: String,
     label: String,
-    selected: Number
+    valueToReturn: String,
+    selectedAddress: null,
+    selectedUser: null
   },
   data: function data() {
     return {
@@ -5496,6 +5498,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     this.observer = new IntersectionObserver(this.infiniteScroll);
   },
   created: function created() {
+    this.selected();
     this.getUsers();
   },
   methods: {
@@ -5506,7 +5509,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       axios.get(this.url, {
         params: {
           search: search,
-          page: this.page
+          page: this.page,
+          userId: this.selectedUser,
+          addressId: this.selectedAddress
         }
       }).then(function (response) {
         _this.list = _this.list.concat(response.data.data);
@@ -5607,11 +5612,14 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       return function (_x, _x2) {
         return _ref3.apply(this, arguments);
       };
-    }(), 500)
-  },
-  selected: function selected(list) {
-    //this.$emit('input',3)
-    this.$emit("option:selected", selectedOption);
+    }(), 500),
+    selected: function selected(value) {
+      if (value && this.valueToReturn) {
+        value = value[this.valueToReturn];
+      }
+
+      this.$emit('input', value);
+    }
   }
 });
 
@@ -28791,7 +28799,7 @@ var render = function () {
     [
       _c("search-infinite", {
         staticClass: "my-2",
-        attrs: { url: "users", label: "name" },
+        attrs: { url: "users", label: "name", "value-to-return": "id" },
         model: {
           value: _vm.selectedUser,
           callback: function ($$v) {
@@ -28802,7 +28810,12 @@ var render = function () {
       }),
       _vm._v(" "),
       _c("search-infinite", {
-        attrs: { url: "address", label: "address" },
+        attrs: {
+          url: "address",
+          searchRelations: _vm.searchRelations,
+          label: "address",
+          "value-to-return": "id",
+        },
         model: {
           value: _vm.selectedAddress,
           callback: function ($$v) {
@@ -28850,7 +28863,7 @@ var render = function () {
       open: _vm.onOpen,
       close: _vm.onClose,
       search: _vm.inputSearch,
-      option: _vm.selected,
+      input: _vm.selected,
     },
     scopedSlots: _vm._u([
       {
