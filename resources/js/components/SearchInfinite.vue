@@ -9,6 +9,7 @@
         class="form-control"
         :loading="loading"
         @input="selected"
+
     >
 
         <template #list-footer>
@@ -25,18 +26,18 @@ import _ from "lodash";
 export default {
 
     name: 'Search-Infinite',
-    emits:{
-
-    },
+    emits:['input'],
     props:{
         url: String,
         label: String,
         valueToReturn: String,
+        selectedUser: null,
         selectedAddress:null,
-        selectedUser:null,
 
     },
     data: () => ({
+        userId : 0,
+        addressId: 0,
         observer: null,
         limit: 10,
         search: '',
@@ -44,9 +45,32 @@ export default {
         total: 0,
         page: 0,
         loading: false,
-
-
     }),
+    watch:{
+
+        selectedUser: function(value,search,loading){
+            if (value !== 0){
+                this.userId = value
+                this.list = []
+                this.loading = true
+                this.page = 0
+                this.limit += 10
+                this.getData(search, loading)
+            }
+
+        },
+        selectedAddress: function (value,search,loading){
+            if (value !== 0){
+                this.addressId = value
+                this.list = []
+                this.loading = true
+                this.page = 0
+                this.limit += 10
+                this.getData(search, loading)
+            }
+
+        }
+    },
     computed: {
 
         hasNextPage() {
@@ -57,13 +81,14 @@ export default {
     },
     mounted() {
       this.observer = new IntersectionObserver(this.infiniteScroll)
+
     },
     created() {
         this.selected();
-        this.getUsers();
+        this.getData();
     },
     methods: {
-        getUsers(search) {
+        getData(search) {
 
             this.page++;
             axios
@@ -72,8 +97,10 @@ export default {
                     params: {
                         search: search,
                         page: this.page,
-                        userId: this.selectedUser,
-                        addressId: this.selectedAddress
+                      //  userId: 1612,
+                        userId: this.userId,
+                        addressId: this.addressId,
+
                     }
                 })
                 .then((response) => {
@@ -84,6 +111,7 @@ export default {
                 })
                 .catch()
                 .then(() => {
+
                     this.loading = false;
                 })
         },
@@ -102,7 +130,7 @@ export default {
                 const ul = target.offsetParent
                 const scrollTop = target.offsetParent.scrollTop
                 this.limit += 10
-                this.getUsers();
+                this.getData();
                 await this.$nextTick()
                ul.scrollTop = scrollTop
             }
@@ -113,7 +141,7 @@ export default {
                 this.loading = true
                 this.page = 0
                 this.limit += 10
-                this.getUsers(search, loading)
+                this.getData(search, loading)
                 await this.$nextTick()
 
             }
@@ -121,12 +149,14 @@ export default {
         selected(value){
             if( value && this.valueToReturn ){
                 value = value[this.valueToReturn];
+
             }
             this.$emit('input', value);
 
 
 
-        }
+        },
+
     },
 
 }

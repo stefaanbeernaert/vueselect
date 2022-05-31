@@ -5392,6 +5392,11 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: "Home",
@@ -5466,20 +5471,23 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
+//
 
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: 'Search-Infinite',
-  emits: {},
+  emits: ['input'],
   props: {
     url: String,
     label: String,
     valueToReturn: String,
-    selectedAddress: null,
-    selectedUser: null
+    selectedUser: null,
+    selectedAddress: null
   },
   data: function data() {
     return {
+      userId: 0,
+      addressId: 0,
       observer: null,
       limit: 10,
       search: '',
@@ -5488,6 +5496,28 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       page: 0,
       loading: false
     };
+  },
+  watch: {
+    selectedUser: function selectedUser(value, search, loading) {
+      if (value !== 0) {
+        this.userId = value;
+        this.list = [];
+        this.loading = true;
+        this.page = 0;
+        this.limit += 10;
+        this.getData(search, loading);
+      }
+    },
+    selectedAddress: function selectedAddress(value, search, loading) {
+      if (value !== 0) {
+        this.addressId = value;
+        this.list = [];
+        this.loading = true;
+        this.page = 0;
+        this.limit += 10;
+        this.getData(search, loading);
+      }
+    }
   },
   computed: {
     hasNextPage: function hasNextPage() {
@@ -5499,10 +5529,10 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
   },
   created: function created() {
     this.selected();
-    this.getUsers();
+    this.getData();
   },
   methods: {
-    getUsers: function getUsers(search) {
+    getData: function getData(search) {
       var _this = this;
 
       this.page++;
@@ -5510,8 +5540,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         params: {
           search: search,
           page: this.page,
-          userId: this.selectedUser,
-          addressId: this.selectedAddress
+          //  userId: 1612,
+          userId: this.userId,
+          addressId: this.addressId
         }
       }).then(function (response) {
         _this.list = _this.list.concat(response.data.data);
@@ -5566,7 +5597,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 scrollTop = target.offsetParent.scrollTop;
                 _this3.limit += 10;
 
-                _this3.getUsers();
+                _this3.getData();
 
                 _context2.next = 8;
                 return _this3.$nextTick();
@@ -5597,7 +5628,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 this.loading = true;
                 this.page = 0;
                 this.limit += 10;
-                this.getUsers(search, loading);
+                this.getData(search, loading);
                 _context3.next = 8;
                 return this.$nextTick();
 
@@ -28799,7 +28830,13 @@ var render = function () {
     [
       _c("search-infinite", {
         staticClass: "my-2",
-        attrs: { url: "users", label: "name", "value-to-return": "id" },
+        attrs: {
+          "selected-user": _vm.selectedUser,
+          "selected-address": _vm.selectedAddress,
+          url: "users",
+          label: "name",
+          "value-to-return": "id",
+        },
         model: {
           value: _vm.selectedUser,
           callback: function ($$v) {
@@ -28811,8 +28848,9 @@ var render = function () {
       _vm._v(" "),
       _c("search-infinite", {
         attrs: {
+          "selected-address": _vm.selectedAddress,
+          "selected-user": _vm.selectedUser,
           url: "address",
-          searchRelations: _vm.searchRelations,
           label: "address",
           "value-to-return": "id",
         },

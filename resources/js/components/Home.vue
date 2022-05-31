@@ -1,6 +1,9 @@
 <template>
     <div>
         <search-infinite
+
+            :selected-user="selectedUser"
+            :selected-address="selectedAddress"
             class="my-2"
             :url="'users'"
             :label="'name'"
@@ -10,8 +13,10 @@
         </search-infinite>
 
         <search-infinite
+
+            :selected-address="selectedAddress"
+            :selected-user="selectedUser"
             :url="'address'"
-            :searchRelations="searchRelations"
             :label="'address'"
             value-to-return="id"
             v-model="selectedAddress"
