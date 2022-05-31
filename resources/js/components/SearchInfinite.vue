@@ -33,6 +33,7 @@ export default {
         valueToReturn: String,
         selectedUser: null,
         selectedAddress:null,
+        searchParams:[],
 
     },
     data: () => ({
@@ -48,25 +49,22 @@ export default {
     }),
     watch:{
 
-        selectedUser: function(value,search,loading){
+        selectedUser: function(value){
             if (value !== 0){
                 this.userId = value
                 this.list = []
                 this.loading = true
                 this.page = 0
                 this.limit += 10
-                this.getData(search, loading)
+                this.getData()
             }
 
         },
-        selectedAddress: function (value,search,loading){
+        selectedAddress: function (value){
+           // console.log(value)
             if (value !== 0){
                 this.addressId = value
-                this.list = []
-                this.loading = true
-                this.page = 0
-                this.limit += 10
-                this.getData(search, loading)
+
             }
 
         }
@@ -85,7 +83,7 @@ export default {
     },
     created() {
         this.selected();
-        this.getData();
+       // this.getData();
     },
     methods: {
         getData(search) {
@@ -100,13 +98,14 @@ export default {
                       //  userId: 1612,
                         userId: this.userId,
                         addressId: this.addressId,
+                        ...this.searchParams,
 
                     }
                 })
                 .then((response) => {
 
                    this.list = this.list.concat(response.data.data);
-                    this.total = response.data.total;
+                   this.total = response.data.total;
 
                 })
                 .catch()
@@ -123,13 +122,14 @@ export default {
         },
         onClose() {
           this.observer.disconnect()
+
         },
         async infiniteScroll([{isIntersecting, target}]) {
             if (isIntersecting) {
 
                 const ul = target.offsetParent
                 const scrollTop = target.offsetParent.scrollTop
-                this.limit += 10
+               this.limit += 10
                 this.getData();
                 await this.$nextTick()
                ul.scrollTop = scrollTop

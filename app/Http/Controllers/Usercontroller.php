@@ -25,7 +25,9 @@ class Usercontroller extends Controller
 
 
         return User::query()
-
+            ->when($request->userId,function ($q) use ($request){
+                $q->where('id', 'like', '%' . $request->userId . '%');
+            })
             ->when($request->search,function ($q) use ($request) {
 
                 $q->where('name', 'like', '%' . $request->search . '%');

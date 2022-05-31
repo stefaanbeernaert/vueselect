@@ -5451,6 +5451,12 @@ function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try
 
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 //
 //
 //
@@ -5482,7 +5488,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     label: String,
     valueToReturn: String,
     selectedUser: null,
-    selectedAddress: null
+    selectedAddress: null,
+    searchParams: []
   },
   data: function data() {
     return {
@@ -5498,24 +5505,20 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     };
   },
   watch: {
-    selectedUser: function selectedUser(value, search, loading) {
+    selectedUser: function selectedUser(value) {
       if (value !== 0) {
         this.userId = value;
         this.list = [];
         this.loading = true;
         this.page = 0;
         this.limit += 10;
-        this.getData(search, loading);
+        this.getData();
       }
     },
-    selectedAddress: function selectedAddress(value, search, loading) {
+    selectedAddress: function selectedAddress(value) {
+      // console.log(value)
       if (value !== 0) {
         this.addressId = value;
-        this.list = [];
-        this.loading = true;
-        this.page = 0;
-        this.limit += 10;
-        this.getData(search, loading);
       }
     }
   },
@@ -5528,8 +5531,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     this.observer = new IntersectionObserver(this.infiniteScroll);
   },
   created: function created() {
-    this.selected();
-    this.getData();
+    this.selected(); // this.getData();
   },
   methods: {
     getData: function getData(search) {
@@ -5537,13 +5539,13 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
       this.page++;
       axios.get(this.url, {
-        params: {
+        params: _objectSpread({
           search: search,
           page: this.page,
           //  userId: 1612,
           userId: this.userId,
           addressId: this.addressId
-        }
+        }, this.searchParams)
       }).then(function (response) {
         _this.list = _this.list.concat(response.data.data);
         _this.total = response.data.total;
@@ -28831,6 +28833,10 @@ var render = function () {
       _c("search-infinite", {
         staticClass: "my-2",
         attrs: {
+          "search-params": {
+            userId: _vm.selectedUser,
+            addressId: _vm.selectedAddress,
+          },
           "selected-user": _vm.selectedUser,
           "selected-address": _vm.selectedAddress,
           url: "users",
@@ -28848,6 +28854,10 @@ var render = function () {
       _vm._v(" "),
       _c("search-infinite", {
         attrs: {
+          "search-params": {
+            userId: _vm.selectedUser,
+            addressId: _vm.selectedAddress,
+          },
           "selected-address": _vm.selectedAddress,
           "selected-user": _vm.selectedUser,
           url: "address",

@@ -1,7 +1,7 @@
 <template>
     <div>
         <search-infinite
-
+            :search-params="{userId: selectedUser,addressId: selectedAddress}"
             :selected-user="selectedUser"
             :selected-address="selectedAddress"
             class="my-2"
@@ -13,7 +13,7 @@
         </search-infinite>
 
         <search-infinite
-
+            :search-params="{userId: selectedUser,addressId: selectedAddress}"
             :selected-address="selectedAddress"
             :selected-user="selectedUser"
             :url="'address'"
@@ -31,22 +31,18 @@ import SearchInfinite from "./SearchInfinite";
 
 export default {
     name: "Home",
-    props:{
-
-    },
+    props: {},
     data: () => ({
         url: String,
         label: String,
         selectedUser: null,
-        selectedAddress:null,
+        selectedAddress: null,
     }),
-    components:{
+    components: {
         SearchInfinite
     },
 
-    methods:{
-
-    },
+    methods: {},
 
 }
 </script>
