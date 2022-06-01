@@ -58,11 +58,20 @@ export default {
                 this.page = 0
                 this.limit += 10
                 this.getData()
+
             }
 
         },
         selectedAddress: function (value){
-            //console.log(value)
+            if (value !== 0){
+
+                this.list = []
+                this.loading = true
+                this.page = 0
+                this.limit += 10
+                this.getData()
+
+            }
         }
     },
     computed: {
@@ -103,6 +112,7 @@ export default {
                    this.list = this.list.concat(response.data.data);
                    this.total = response.data.total;
 
+
                 })
                 .catch()
                 .then(() => {
@@ -125,7 +135,7 @@ export default {
 
                 const ul = target.offsetParent
                 const scrollTop = target.offsetParent.scrollTop
-               this.limit += 10
+                this.limit += 10
                 this.getData();
                 await this.$nextTick()
                ul.scrollTop = scrollTop
@@ -143,14 +153,12 @@ export default {
             }
         }, 500),
         selected(value){
-            console.log(value)
+
             if( value && this.valueToReturn ){
                 value = value[this.valueToReturn];
 
             }
             this.$emit('input', value);
-
-
 
         },
 

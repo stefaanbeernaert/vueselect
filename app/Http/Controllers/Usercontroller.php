@@ -24,11 +24,14 @@ class Usercontroller extends Controller
     public function users(Request $request){
 
 
-
-
         return User::query()
+            ->when($request->addressId, function ($query) use ($request){
+                $query->whereHas('addresses', function ($query) use ($request){
+                    $query->where('id', $request->addressId);
+                });
+            })
             ->when($request->userId,function ($q) use ($request){
-                $q->where('id', 'like', '%' . $request->userId . '%');
+                $q->where('id',$request->userId);
             })
             ->when($request->search,function ($q) use ($request) {
 
@@ -36,8 +39,6 @@ class Usercontroller extends Controller
 
             })
             ->orderBy('name', 'ASC')->paginate(10);
-
-
     }
 
     /**

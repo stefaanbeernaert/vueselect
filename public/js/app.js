@@ -5515,7 +5515,14 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         this.getData();
       }
     },
-    selectedAddress: function selectedAddress(value) {//console.log(value)
+    selectedAddress: function selectedAddress(value) {
+      if (value !== 0) {
+        this.list = [];
+        this.loading = true;
+        this.page = 0;
+        this.limit += 10;
+        this.getData();
+      }
     }
   },
   computed: {
@@ -5643,8 +5650,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       };
     }(), 500),
     selected: function selected(value) {
-      console.log(value);
-
       if (value && this.valueToReturn) {
         value = value[this.valueToReturn];
       }
