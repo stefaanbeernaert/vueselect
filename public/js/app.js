@@ -5397,6 +5397,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: "Home",
@@ -5507,7 +5508,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   watch: {
     selectedUser: function selectedUser(value) {
       if (value !== 0) {
-        this.userId = value;
         this.list = [];
         this.loading = true;
         this.page = 0;
@@ -5515,11 +5515,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         this.getData();
       }
     },
-    selectedAddress: function selectedAddress(value) {
-      // console.log(value)
-      if (value !== 0) {
-        this.addressId = value;
-      }
+    selectedAddress: function selectedAddress(value) {//console.log(value)
     }
   },
   computed: {
@@ -5647,6 +5643,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       };
     }(), 500),
     selected: function selected(value) {
+      console.log(value);
+
       if (value && this.valueToReturn) {
         value = value[this.valueToReturn];
       }

@@ -14,7 +14,7 @@ class Addresscontroller extends Controller
        // dd($request->searchParams);
         return Address::query()
             ->when($request->userId,function ($q) use ($request){
-                $q->where('user_id', 'like', '%' . $request->userId . '%');
+                $q->where('user_id',$request->userId);
             })
             ->when($request->search,function ($q) use ($request) {
 

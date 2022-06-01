@@ -31,6 +31,7 @@ export default {
         url: String,
         label: String,
         valueToReturn: String,
+
         selectedUser: null,
         selectedAddress:null,
         searchParams:[],
@@ -51,7 +52,7 @@ export default {
 
         selectedUser: function(value){
             if (value !== 0){
-                this.userId = value
+
                 this.list = []
                 this.loading = true
                 this.page = 0
@@ -61,12 +62,7 @@ export default {
 
         },
         selectedAddress: function (value){
-           // console.log(value)
-            if (value !== 0){
-                this.addressId = value
-
-            }
-
+            //console.log(value)
         }
     },
     computed: {
@@ -147,6 +143,7 @@ export default {
             }
         }, 500),
         selected(value){
+            console.log(value)
             if( value && this.valueToReturn ){
                 value = value[this.valueToReturn];
 
