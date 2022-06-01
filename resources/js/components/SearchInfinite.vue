@@ -9,9 +9,7 @@
         class="form-control"
         :loading="loading"
         @input="selected"
-
     >
-
         <template #list-footer>
             <li v-show="hasNextPage" ref="load" class="loader">
                 Loading more options...
@@ -31,15 +29,11 @@ export default {
         url: String,
         label: String,
         valueToReturn: String,
-
-        selectedUser: null,
-        selectedAddress:null,
-        searchParams:[],
+        searchParams:{},
 
     },
     data: () => ({
-        userId : 0,
-        addressId: 0,
+
         observer: null,
         limit: 10,
         search: '',
@@ -49,33 +43,14 @@ export default {
         loading: false,
     }),
     watch:{
-
-        selectedUser: function(value){
-            if (value !== 0){
-
+        searchParams: function (){
                 this.list = []
                 this.loading = true
                 this.page = 0
-                this.limit += 10
                 this.getData()
-
-            }
-
-        },
-        selectedAddress: function (value){
-            if (value !== 0){
-
-                this.list = []
-                this.loading = true
-                this.page = 0
-                this.limit += 10
-                this.getData()
-
-            }
         }
     },
     computed: {
-
         hasNextPage() {
 
             return this.list.length < this.total
@@ -88,11 +63,9 @@ export default {
     },
     created() {
         this.selected();
-       // this.getData();
     },
     methods: {
         getData(search) {
-
             this.page++;
             axios
                 .get(this.url, {
@@ -100,39 +73,28 @@ export default {
                     params: {
                         search: search,
                         page: this.page,
-                      //  userId: 1612,
-                        userId: this.userId,
-                        addressId: this.addressId,
                         ...this.searchParams,
 
                     }
                 })
                 .then((response) => {
-
                    this.list = this.list.concat(response.data.data);
                    this.total = response.data.total;
-
-
                 })
                 .catch()
                 .then(() => {
-
                     this.loading = false;
                 })
         },
         async onOpen() {
-
                await this.$nextTick()
                 this.observer.observe(this.$refs.load)
-
         },
         onClose() {
           this.observer.disconnect()
-
         },
         async infiniteScroll([{isIntersecting, target}]) {
             if (isIntersecting) {
-
                 const ul = target.offsetParent
                 const scrollTop = target.offsetParent.scrollTop
                 this.limit += 10

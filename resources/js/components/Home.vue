@@ -19,7 +19,6 @@
             :url="'address'"
             :label="'address'"
             value-to-return="id"
-
             v-model="selectedAddress"
         >
         </search-infinite>

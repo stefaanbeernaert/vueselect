@@ -5397,7 +5397,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: "Home",
@@ -5477,8 +5476,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
-//
-//
 
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
@@ -5488,14 +5485,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     url: String,
     label: String,
     valueToReturn: String,
-    selectedUser: null,
-    selectedAddress: null,
-    searchParams: []
+    searchParams: {}
   },
   data: function data() {
     return {
-      userId: 0,
-      addressId: 0,
       observer: null,
       limit: 10,
       search: '',
@@ -5506,23 +5499,11 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     };
   },
   watch: {
-    selectedUser: function selectedUser(value) {
-      if (value !== 0) {
-        this.list = [];
-        this.loading = true;
-        this.page = 0;
-        this.limit += 10;
-        this.getData();
-      }
-    },
-    selectedAddress: function selectedAddress(value) {
-      if (value !== 0) {
-        this.list = [];
-        this.loading = true;
-        this.page = 0;
-        this.limit += 10;
-        this.getData();
-      }
+    searchParams: function searchParams() {
+      this.list = [];
+      this.loading = true;
+      this.page = 0;
+      this.getData();
     }
   },
   computed: {
@@ -5534,7 +5515,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     this.observer = new IntersectionObserver(this.infiniteScroll);
   },
   created: function created() {
-    this.selected(); // this.getData();
+    this.selected();
   },
   methods: {
     getData: function getData(search) {
@@ -5544,10 +5525,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       axios.get(this.url, {
         params: _objectSpread({
           search: search,
-          page: this.page,
-          //  userId: 1612,
-          userId: this.userId,
-          addressId: this.addressId
+          page: this.page
         }, this.searchParams)
       }).then(function (response) {
         _this.list = _this.list.concat(response.data.data);
