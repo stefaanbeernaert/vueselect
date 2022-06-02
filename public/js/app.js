@@ -5398,6 +5398,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: "Home",
@@ -5519,9 +5520,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.page = 0;
       this.getData();
     },
-    value: function value(e) {
+    value: function value(e, old) {
       // watch it
-      if (e !== undefined) {
+      if (this.value > 0 && e !== old && this.list.length == 0) {
         this.getItem();
       }
     }
@@ -5535,7 +5536,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     this.observer = new IntersectionObserver(this.infiniteScroll);
   },
   created: function created() {
-    /*this.getItem();*/
     this.selected();
   },
   methods: {
@@ -5548,7 +5548,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           id: this.value
         }
       }).then(function (response) {
-        _this.item = response.data.name; // console.log(this.item)
+        _this.item = {
+          name: response.data.name,
+          id: response.data.id
+        };
       })["catch"]();
     },
     getData: function getData(search) {
@@ -5575,13 +5578,15 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
-                _context.next = 2;
+                _this3.getData();
+
+                _context.next = 3;
                 return _this3.$nextTick();
 
-              case 2:
+              case 3:
                 _this3.observer.observe(_this3.$refs.load);
 
-              case 3:
+              case 4:
               case "end":
                 return _context.stop();
             }
@@ -28847,10 +28852,6 @@ var render = function () {
       _c("search-infinite", {
         staticClass: "my-2",
         attrs: {
-          "search-params": {
-            userId: _vm.selectedUser,
-            addressId: _vm.selectedAddress,
-          },
           "selected-user": _vm.selectedUser,
           "selected-address": _vm.selectedAddress,
           url: "users",

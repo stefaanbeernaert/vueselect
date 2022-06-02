@@ -23,14 +23,15 @@
 <script>
 import 'vue-select/dist/vue-select.css';
 import _ from "lodash";
+
 export default {
     name: 'Search-Infinite',
-    emits:['input'],
-    props:{
+    emits: ['input'],
+    props: {
         url: String,
         label: String,
         valueToReturn: String,
-        searchParams:{},
+        searchParams: {},
         value: 0,
 
     },
@@ -45,56 +46,69 @@ export default {
         item: {},
 
     }),
-    watch:{
-        searchParams: function (){
+    watch: {
+        searchParams: function () {
             this.list = []
             this.loading = true
             this.page = 0
             this.getData()
         },
-        value: function(e) { // watch it
+        value: function (e, old) { // watch it
 
 
-            if ( e !== undefined){
+            if (this.value > 0 && e !== old && this.list.length == 0) {
 
                 this.getItem()
+
             }
         },
 
 
-    },
+    }
+    ,
     computed: {
         hasNextPage() {
             return this.list.length < this.total
-        },
-    },
+        }
+        ,
+    }
+    ,
     mounted() {
         this.observer = new IntersectionObserver(this.infiniteScroll)
-    },
+    }
+    ,
     created() {
-        /*this.getItem();*/
+
         this.selected();
-    },
+    }
+    ,
     methods: {
-        getItem(){
+
+        getItem() {
+
             this.page++
             axios
-                .get('/getItem',{
+                .get('/getItem', {
                     params: {
-                     id: this.value,
+                        id: this.value,
 
                     }
                 })
                 .then((response) => {
 
-                    this.item = response.data.name
-                   // console.log(this.item)
+                    this.item = {
+                        name : response.data.name,
+                        id : response.data.id
+                    }
+
                 })
                 .catch()
 
-        },
+        }
+        ,
         getData(search) {
             this.page++;
+
             axios
                 .get(this.url, {
                     params: {
@@ -111,14 +125,18 @@ export default {
                 .then(() => {
                     this.loading = false;
                 })
-        },
+        }
+        ,
         async onOpen() {
+            this.getData();
             await this.$nextTick()
             this.observer.observe(this.$refs.load)
-        },
+        }
+        ,
         onClose() {
             this.observer.disconnect()
-        },
+        }
+        ,
         async infiniteScroll([{isIntersecting, target}]) {
             if (isIntersecting) {
                 const ul = target.offsetParent
@@ -128,9 +146,11 @@ export default {
                 await this.$nextTick()
                 ul.scrollTop = scrollTop
             }
-        },
-        inputSearch: _.debounce(   async function (search, loading) {
+        }
+        ,
+        inputSearch: _.debounce(async function (search, loading) {
             if (search.length) {
+
                 this.list = []
                 this.loading = true
                 this.page = 0
@@ -139,13 +159,16 @@ export default {
                 await this.$nextTick()
             }
         }, 500),
-        selected(value){
-            if( value && this.valueToReturn ){
+        selected(value) {
+            if (value && this.valueToReturn) {
                 value = value[this.valueToReturn];
             }
             this.$emit('input', value);
-        },
-    },
+        }
+        ,
+    }
+    ,
+
 }
 </script>
 <style scoped>
