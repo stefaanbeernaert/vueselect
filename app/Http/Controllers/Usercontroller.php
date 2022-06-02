@@ -16,29 +16,42 @@ class Usercontroller extends Controller
     public function index()
     {
         return view('test');
-       /* return response()->json(compact([
-            'users'
-        ]));*/
+        /* return response()->json(compact([
+             'users'
+         ]));*/
     }
 
-    public function users(Request $request){
+    public function users(Request $request)
+    {
 
 
         return User::query()
-            ->when($request->addressId, function ($query) use ($request){
-                $query->whereHas('addresses', function ($query) use ($request){
+            ->when($request->addressId, function ($query) use ($request) {
+                $query->whereHas('addresses', function ($query) use ($request) {
                     $query->where('id', $request->addressId);
                 });
             })
-            ->when($request->userId,function ($q) use ($request){
-                $q->where('id',$request->userId);
+            ->when($request->userId, function ($q) use ($request) {
+                $q->where('id', $request->userId);
             })
-            ->when($request->search,function ($q) use ($request) {
+            ->when($request->search, function ($q) use ($request) {
 
                 $q->where('name', 'like', '%' . $request->search . '%');
 
             })
             ->orderBy('name', 'ASC')->paginate(10);
+    }
+
+    public function getItem(Request $request)
+    {
+      // dd($request);
+        return User::query()->findOrFail($request->id);
+/*        return User::query()
+            ->when($request->addressId, function ($query) use ($request) {
+                $query->whereHas('addresses', function ($query) use ($request) {
+                    $query->where('id', $request->addressId);
+                });
+            })->first();*/
     }
 
     /**
@@ -54,7 +67,7 @@ class Usercontroller extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -65,7 +78,7 @@ class Usercontroller extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -76,7 +89,7 @@ class Usercontroller extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
@@ -87,8 +100,8 @@ class Usercontroller extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param \Illuminate\Http\Request $request
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
@@ -99,7 +112,7 @@ class Usercontroller extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)

@@ -9,7 +9,11 @@
         class="form-control"
         :loading="loading"
         @input="selected"
+        :value="this.item"
+        @test="$emit('update:selectedUser', $event.target.value)"
+
     >
+
         <template #list-footer>
             <li v-show="hasNextPage" ref="load" class="loader">
                 Loading more options...
@@ -20,9 +24,7 @@
 <script>
 import 'vue-select/dist/vue-select.css';
 import _ from "lodash";
-
 export default {
-
     name: 'Search-Infinite',
     emits:['input'],
     props:{
@@ -30,10 +32,10 @@ export default {
         label: String,
         valueToReturn: String,
         searchParams:{},
-
+        valueId: 0,
+        item: {}
     },
     data: () => ({
-
         observer: null,
         limit: 10,
         search: '',
@@ -41,45 +43,69 @@ export default {
         total: 0,
         page: 0,
         loading: false,
+
     }),
     watch:{
         searchParams: function (){
-                this.list = []
-                this.loading = true
-                this.page = 0
-                this.getData()
-        }
+            this.list = []
+            this.loading = true
+            this.page = 0
+            this.getData()
+        },
+        valueId: function(e) { // watch it
+            if (e !== 0){
+                console.log('Prop changed: ', e)
+
+                this.getItem()
+            }
+            },
+
+
+
     },
     computed: {
         hasNextPage() {
-
             return this.list.length < this.total
-
         },
     },
     mounted() {
-      this.observer = new IntersectionObserver(this.infiniteScroll)
-
+        this.observer = new IntersectionObserver(this.infiniteScroll)
     },
     created() {
+        /*this.getItem();*/
         this.selected();
     },
     methods: {
-        getData(search) {
-            this.page++;
+        getItem(){
+            this.page++
             axios
-                .get(this.url, {
-
+                .get('/getItem',{
                     params: {
-                        search: search,
-                        page: this.page,
-                        ...this.searchParams,
+                     id: this.valueId,
 
                     }
                 })
                 .then((response) => {
-                   this.list = this.list.concat(response.data.data);
-                   this.total = response.data.total;
+
+                    this.item = response.data.name
+                    console.log(this.item)
+                })
+                .catch()
+
+        },
+        getData(search) {
+            this.page++;
+            axios
+                .get(this.url, {
+                    params: {
+                        search: search,
+                        page: this.page,
+                        ...this.searchParams,
+                    }
+                })
+                .then((response) => {
+                    this.list = this.list.concat(response.data.data);
+                    this.total = response.data.total;
                 })
                 .catch()
                 .then(() => {
@@ -87,11 +113,11 @@ export default {
                 })
         },
         async onOpen() {
-               await this.$nextTick()
-                this.observer.observe(this.$refs.load)
+            await this.$nextTick()
+            this.observer.observe(this.$refs.load)
         },
         onClose() {
-          this.observer.disconnect()
+            this.observer.disconnect()
         },
         async infiniteScroll([{isIntersecting, target}]) {
             if (isIntersecting) {
@@ -100,7 +126,7 @@ export default {
                 this.limit += 10
                 this.getData();
                 await this.$nextTick()
-               ul.scrollTop = scrollTop
+                ul.scrollTop = scrollTop
             }
         },
         inputSearch: _.debounce(   async function (search, loading) {
@@ -111,21 +137,15 @@ export default {
                 this.limit += 10
                 this.getData(search, loading)
                 await this.$nextTick()
-
             }
         }, 500),
         selected(value){
-
             if( value && this.valueToReturn ){
                 value = value[this.valueToReturn];
-
             }
             this.$emit('input', value);
-
         },
-
     },
-
 }
 </script>
 <style scoped>

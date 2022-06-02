@@ -5397,6 +5397,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: "Home",
@@ -5406,8 +5408,14 @@ __webpack_require__.r(__webpack_exports__);
       url: String,
       label: String,
       selectedUser: null,
-      selectedAddress: null
+      selectedAddress: null,
+      valueId: 0
     };
+  },
+  watch: {
+    selectedAddress: function selectedAddress() {
+      this.valueId = this.selectedAddress.user_id; //  console.log(this.valueId)
+    }
   },
   components: {
     SearchInfinite: _SearchInfinite__WEBPACK_IMPORTED_MODULE_0__["default"]
@@ -5476,6 +5484,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
 
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
@@ -5485,7 +5497,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     url: String,
     label: String,
     valueToReturn: String,
-    searchParams: {}
+    searchParams: {},
+    valueId: 0,
+    item: {}
   },
   data: function data() {
     return {
@@ -5504,6 +5518,13 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.loading = true;
       this.page = 0;
       this.getData();
+    },
+    valueId: function valueId(e) {
+      // watch it
+      if (e !== 0) {
+        console.log('Prop changed: ', e);
+        this.getItem();
+      }
     }
   },
   computed: {
@@ -5515,11 +5536,25 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     this.observer = new IntersectionObserver(this.infiniteScroll);
   },
   created: function created() {
+    /*this.getItem();*/
     this.selected();
   },
   methods: {
-    getData: function getData(search) {
+    getItem: function getItem() {
       var _this = this;
+
+      this.page++;
+      axios.get('/getItem', {
+        params: {
+          id: this.valueId
+        }
+      }).then(function (response) {
+        _this.item = response.data.name;
+        console.log(_this.item);
+      })["catch"]();
+    },
+    getData: function getData(search) {
+      var _this2 = this;
 
       this.page++;
       axios.get(this.url, {
@@ -5528,14 +5563,14 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           page: this.page
         }, this.searchParams)
       }).then(function (response) {
-        _this.list = _this.list.concat(response.data.data);
-        _this.total = response.data.total;
+        _this2.list = _this2.list.concat(response.data.data);
+        _this2.total = response.data.total;
       })["catch"]().then(function () {
-        _this.loading = false;
+        _this2.loading = false;
       });
     },
     onOpen: function onOpen() {
-      var _this2 = this;
+      var _this3 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
         return _regeneratorRuntime().wrap(function _callee$(_context) {
@@ -5543,10 +5578,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
             switch (_context.prev = _context.next) {
               case 0:
                 _context.next = 2;
-                return _this2.$nextTick();
+                return _this3.$nextTick();
 
               case 2:
-                _this2.observer.observe(_this2.$refs.load);
+                _this3.observer.observe(_this3.$refs.load);
 
               case 3:
               case "end":
@@ -5560,7 +5595,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.observer.disconnect();
     },
     infiniteScroll: function infiniteScroll(_ref) {
-      var _this3 = this;
+      var _this4 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
         var _ref2, _ref2$, isIntersecting, target, ul, scrollTop;
@@ -5578,12 +5613,12 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
                 ul = target.offsetParent;
                 scrollTop = target.offsetParent.scrollTop;
-                _this3.limit += 10;
+                _this4.limit += 10;
 
-                _this3.getData();
+                _this4.getData();
 
                 _context2.next = 8;
-                return _this3.$nextTick();
+                return _this4.$nextTick();
 
               case 8:
                 ul.scrollTop = scrollTop;
@@ -28835,15 +28870,12 @@ var render = function () {
       _vm._v(" "),
       _c("search-infinite", {
         attrs: {
-          "search-params": {
-            userId: _vm.selectedUser,
-            addressId: _vm.selectedAddress,
-          },
+          "search-params": { userId: _vm.selectedUser },
           "selected-address": _vm.selectedAddress,
           "selected-user": _vm.selectedUser,
           url: "address",
           label: "address",
-          "value-to-return": "id",
+          "value-id": _vm.valueId,
         },
         model: {
           value: _vm.selectedAddress,
@@ -28887,12 +28919,16 @@ var render = function () {
       label: _vm.label,
       filterable: false,
       loading: _vm.loading,
+      value: this.item,
     },
     on: {
       open: _vm.onOpen,
       close: _vm.onClose,
       search: _vm.inputSearch,
       input: _vm.selected,
+      test: function ($event) {
+        return _vm.$emit("update:selectedUser", $event.target.value)
+      },
     },
     scopedSlots: _vm._u([
       {

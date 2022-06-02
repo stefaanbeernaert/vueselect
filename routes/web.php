@@ -20,5 +20,6 @@ Route::get('/', function () {
 
 Route::get('/test','App\Http\Controllers\usercontroller@index')->name('test');
 Route::get('/users','App\Http\Controllers\usercontroller@users')->name('users');
+Route::get('/getItem','App\Http\Controllers\usercontroller@getItem')->name('getItem');
 Route::get('/address','App\Http\Controllers\addresscontroller@addresses')->name('address');
 
