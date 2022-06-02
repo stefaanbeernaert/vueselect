@@ -10,7 +10,6 @@
         :loading="loading"
         @input="selected"
         :value="this.item"
-
     >
 
         <template #list-footer>
@@ -32,8 +31,7 @@ export default {
         label: String,
         valueToReturn: String,
         searchParams: {},
-        value: 0,
-
+        value: null,
     },
     data: () => ({
         observer: null,
@@ -51,15 +49,15 @@ export default {
             this.list = []
             this.loading = true
             this.page = 0
+            this.item = null
             this.getData()
         },
-        value: function (e, old) { // watch it
-
-
-            if (this.value > 0 && e !== old && this.list.length == 0) {
-
+        value: function (e, old) {
+            if (this.value > 0 && e !== old) {
                 this.getItem()
-
+            }
+            else{
+                this.item = e;
             }
         },
 
@@ -85,8 +83,6 @@ export default {
     methods: {
 
         getItem() {
-
-            this.page++
             axios
                 .get('/getItem', {
                     params: {

@@ -5390,15 +5390,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: "Home",
@@ -5415,8 +5406,7 @@ __webpack_require__.r(__webpack_exports__);
     selectedAddress: function selectedAddress() {
       if (this.selectedAddress) {
         this.selectedUser = this.selectedAddress.user_id;
-      } //  console.log(this.valueId)
-
+      }
     }
   },
   components: {
@@ -5488,7 +5478,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
-//
 
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
@@ -5499,7 +5488,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     label: String,
     valueToReturn: String,
     searchParams: {},
-    value: 0
+    value: null
   },
   data: function data() {
     return {
@@ -5518,12 +5507,14 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.list = [];
       this.loading = true;
       this.page = 0;
+      this.item = null;
       this.getData();
     },
     value: function value(e, old) {
-      // watch it
-      if (this.value > 0 && e !== old && this.list.length == 0) {
+      if (this.value > 0 && e !== old) {
         this.getItem();
+      } else {
+        this.item = e;
       }
     }
   },
@@ -5542,7 +5533,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     getItem: function getItem() {
       var _this = this;
 
-      this.page++;
       axios.get('/getItem', {
         params: {
           id: this.value
@@ -28851,13 +28841,7 @@ var render = function () {
     [
       _c("search-infinite", {
         staticClass: "my-2",
-        attrs: {
-          "selected-user": _vm.selectedUser,
-          "selected-address": _vm.selectedAddress,
-          url: "users",
-          label: "name",
-          "value-to-return": "id",
-        },
+        attrs: { url: "users", label: "name", "value-to-return": "id" },
         model: {
           value: _vm.selectedUser,
           callback: function ($$v) {
@@ -28870,8 +28854,6 @@ var render = function () {
       _c("search-infinite", {
         attrs: {
           "search-params": { userId: _vm.selectedUser },
-          "selected-address": _vm.selectedAddress,
-          "selected-user": _vm.selectedUser,
           url: "address",
           label: "address",
         },

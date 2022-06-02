@@ -1,30 +1,21 @@
 <template>
     <div>
         <search-infinite
-            :selected-user="selectedUser"
-            :selected-address="selectedAddress"
             class="my-2"
             :url="'users'"
             :label="'name'"
             value-to-return="id"
             v-model="selectedUser"
-
         >
         </search-infinite>
 
         <search-infinite
             :search-params="{userId: selectedUser}"
-            :selected-address="selectedAddress"
-            :selected-user="selectedUser"
             :url="'address'"
             :label="'address'"
             v-model="selectedAddress"
-
-
         >
         </search-infinite>
-
-
     </div>
 </template>
 
@@ -44,14 +35,9 @@ export default {
     }),
     watch:{
         selectedAddress: function (){
-                if( this.selectedAddress ){
-                    this.selectedUser = this.selectedAddress.user_id
-                }
-
-
-
-          //  console.log(this.valueId)
-
+            if( this.selectedAddress ){
+                this.selectedUser = this.selectedAddress.user_id
+            }
         }
     },
     components: {
