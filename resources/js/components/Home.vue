@@ -9,7 +9,6 @@
             :label="'name'"
             value-to-return="id"
             v-model="selectedUser"
-
         >
         </search-infinite>
 
@@ -20,7 +19,7 @@
             :url="'address'"
             :label="'address'"
             v-model="selectedAddress"
-            :value-id="valueId"
+
         >
         </search-infinite>
 
@@ -40,13 +39,14 @@ export default {
         label: String,
         selectedUser: null,
         selectedAddress: null,
-        valueId: 0,
 
     }),
     watch:{
         selectedAddress: function (){
+                if( this.selectedAddress ){
+                    this.selectedUser = this.selectedAddress.user_id
+                }
 
-                this.valueId = this.selectedAddress.user_id
 
 
           //  console.log(this.valueId)

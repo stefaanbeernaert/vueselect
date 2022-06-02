@@ -5398,7 +5398,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: "Home",
@@ -5408,13 +5407,15 @@ __webpack_require__.r(__webpack_exports__);
       url: String,
       label: String,
       selectedUser: null,
-      selectedAddress: null,
-      valueId: 0
+      selectedAddress: null
     };
   },
   watch: {
     selectedAddress: function selectedAddress() {
-      this.valueId = this.selectedAddress.user_id; //  console.log(this.valueId)
+      if (this.selectedAddress) {
+        this.selectedUser = this.selectedAddress.user_id;
+      } //  console.log(this.valueId)
+
     }
   },
   components: {
@@ -5487,7 +5488,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
-//
 
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
@@ -5498,8 +5498,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     label: String,
     valueToReturn: String,
     searchParams: {},
-    valueId: 0,
-    item: {}
+    value: 0
   },
   data: function data() {
     return {
@@ -5509,7 +5508,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       list: [],
       total: 0,
       page: 0,
-      loading: false
+      loading: false,
+      item: {}
     };
   },
   watch: {
@@ -5519,10 +5519,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.page = 0;
       this.getData();
     },
-    valueId: function valueId(e) {
+    value: function value(e) {
       // watch it
-      if (e !== 0) {
-        console.log('Prop changed: ', e);
+      if (e !== undefined) {
         this.getItem();
       }
     }
@@ -5546,11 +5545,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.page++;
       axios.get('/getItem', {
         params: {
-          id: this.valueId
+          id: this.value
         }
       }).then(function (response) {
-        _this.item = response.data.name;
-        console.log(_this.item);
+        _this.item = response.data.name; // console.log(this.item)
       })["catch"]();
     },
     getData: function getData(search) {
@@ -28875,7 +28873,6 @@ var render = function () {
           "selected-user": _vm.selectedUser,
           url: "address",
           label: "address",
-          "value-id": _vm.valueId,
         },
         model: {
           value: _vm.selectedAddress,
@@ -28926,9 +28923,6 @@ var render = function () {
       close: _vm.onClose,
       search: _vm.inputSearch,
       input: _vm.selected,
-      test: function ($event) {
-        return _vm.$emit("update:selectedUser", $event.target.value)
-      },
     },
     scopedSlots: _vm._u([
       {

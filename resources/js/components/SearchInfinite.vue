@@ -10,7 +10,6 @@
         :loading="loading"
         @input="selected"
         :value="this.item"
-        @test="$emit('update:selectedUser', $event.target.value)"
 
     >
 
@@ -32,8 +31,8 @@ export default {
         label: String,
         valueToReturn: String,
         searchParams:{},
-        valueId: 0,
-        item: {}
+        value: 0,
+
     },
     data: () => ({
         observer: null,
@@ -43,6 +42,7 @@ export default {
         total: 0,
         page: 0,
         loading: false,
+        item: {},
 
     }),
     watch:{
@@ -52,14 +52,14 @@ export default {
             this.page = 0
             this.getData()
         },
-        valueId: function(e) { // watch it
-            if (e !== 0){
-                console.log('Prop changed: ', e)
+        value: function(e) { // watch it
+
+
+            if ( e !== undefined){
 
                 this.getItem()
             }
-            },
-
+        },
 
 
     },
@@ -81,14 +81,14 @@ export default {
             axios
                 .get('/getItem',{
                     params: {
-                     id: this.valueId,
+                     id: this.value,
 
                     }
                 })
                 .then((response) => {
 
                     this.item = response.data.name
-                    console.log(this.item)
+                   // console.log(this.item)
                 })
                 .catch()
 
