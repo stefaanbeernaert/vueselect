@@ -5504,11 +5504,13 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   },
   watch: {
     searchParams: function searchParams() {
-      this.list = [];
-      this.loading = true;
-      this.page = 0;
-      this.item = null;
-      this.getData();
+      if (this.search !== '') {
+        this.list = [];
+        this.loading = true;
+        this.page = 0;
+        this.item = null;
+        this.getData();
+      }
     },
     value: function value(e, old) {
       if (this.value > 0 && e !== old) {
@@ -5533,7 +5535,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     getItem: function getItem() {
       var _this = this;
 
-      axios.get('/getItem', {
+      axios.get(this.url, {
         params: {
           id: this.value
         }

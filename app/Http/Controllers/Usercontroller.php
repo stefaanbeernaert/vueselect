@@ -23,36 +23,41 @@ class Usercontroller extends Controller
 
     public function users(Request $request)
     {
+        if($request->id){
+            return User::query()->findOrFail($request->id);
+        }else{
+            return User::query()
+                ->when($request->addressId, function ($query) use ($request) {
+                    $query->whereHas('addresses', function ($query) use ($request) {
+                        $query->where('id', $request->addressId);
+                    });
+                })
+                ->when($request->userId, function ($q) use ($request) {
+                    $q->where('id', $request->userId);
+                })
+                ->when($request->search, function ($q) use ($request) {
+
+                    $q->where('name', 'like', '%' . $request->search . '%');
+
+                })
+                ->orderBy('name', 'ASC')->paginate(10);
+        }
 
 
-        return User::query()
-            ->when($request->addressId, function ($query) use ($request) {
-                $query->whereHas('addresses', function ($query) use ($request) {
-                    $query->where('id', $request->addressId);
-                });
-            })
-            ->when($request->userId, function ($q) use ($request) {
-                $q->where('id', $request->userId);
-            })
-            ->when($request->search, function ($q) use ($request) {
 
-                $q->where('name', 'like', '%' . $request->search . '%');
-
-            })
-            ->orderBy('name', 'ASC')->paginate(10);
     }
 
-    public function getItem(Request $request)
+   /* public function getItem(Request $request)
     {
-      // dd($request);
+
         return User::query()->findOrFail($request->id);
 /*        return User::query()
             ->when($request->addressId, function ($query) use ($request) {
                 $query->whereHas('addresses', function ($query) use ($request) {
                     $query->where('id', $request->addressId);
                 });
-            })->first();*/
-    }
+            })->first();
+    }*/
 
     /**
      * Show the form for creating a new resource.

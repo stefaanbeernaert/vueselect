@@ -46,11 +46,16 @@ export default {
     }),
     watch: {
         searchParams: function () {
-            this.list = []
-            this.loading = true
-            this.page = 0
-            this.item = null
-            this.getData()
+            if (this.search !== ''){
+                this.list = []
+                this.loading = true
+                this.page = 0
+                this.item = null
+                this.getData()
+            }
+
+
+
         },
         value: function (e, old) {
             if (this.value > 0 && e !== old) {
@@ -84,7 +89,7 @@ export default {
 
         getItem() {
             axios
-                .get('/getItem', {
+                .get(this.url, {
                     params: {
                         id: this.value,
 
