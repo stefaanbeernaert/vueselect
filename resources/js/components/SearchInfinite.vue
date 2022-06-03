@@ -41,19 +41,18 @@ export default {
         total: 0,
         page: 0,
         loading: false,
-        item: {},
+        item: [],
 
     }),
     watch: {
         searchParams: function () {
-            if (this.search !== ''){
+            if(this.searchParams.userId){
                 this.list = []
                 this.loading = true
                 this.page = 0
                 this.item = null
                 this.getData()
             }
-
 
 
         },
@@ -77,7 +76,10 @@ export default {
     }
     ,
     mounted() {
-        this.observer = new IntersectionObserver(this.infiniteScroll)
+
+            this.observer = new IntersectionObserver(this.infiniteScroll)
+
+
     }
     ,
     created() {

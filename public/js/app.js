@@ -5499,12 +5499,12 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       total: 0,
       page: 0,
       loading: false,
-      item: {}
+      item: []
     };
   },
   watch: {
     searchParams: function searchParams() {
-      if (this.search !== '') {
+      if (this.searchParams.userId) {
         this.list = [];
         this.loading = true;
         this.page = 0;
