@@ -5504,7 +5504,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   },
   watch: {
     searchParams: function searchParams() {
-      if (this.searchParams.userId) {
+      if (Object.values(this.searchParams) > 0) {
         this.list = [];
         this.loading = true;
         this.page = 0;

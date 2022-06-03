@@ -46,7 +46,7 @@ export default {
     }),
     watch: {
         searchParams: function () {
-            if(this.searchParams.userId){
+            if(Object.values(this.searchParams) > 0){
                 this.list = []
                 this.loading = true
                 this.page = 0
